@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <button @click="login">登录</button>
+ 
   </div>
 </template>
 

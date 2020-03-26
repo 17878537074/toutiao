@@ -15,9 +15,6 @@ Vue.config.productionTip = false
 new Vue({
   router,
   render: h => h(App),
-  mounted() {
-    this.$toast('提示文案');
-  },
 
 
 }).$mount('#app')
