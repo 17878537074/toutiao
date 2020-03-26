@@ -23,8 +23,8 @@ export default {};
 <style lang="less">
 .login {
   .resgit {
+    padding: 20 / 360 * 100vw;
     width: 360px;
-    margin: 200px;
     position: relative;
     background: #f2f2f2;
     .top {
@@ -67,7 +67,7 @@ export default {};
          }
     }
     .end{
-        margin-top: 200px;
+        margin-top: 170px;
         height: 30px;
        background: #000000;
     }

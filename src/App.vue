@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-     
     <router-view />
+    <button @click="login">登录</button>
   </div>
 </template>
 
 <style lang="less">
 // 公共样式
 @import url("//at.alicdn.com/t/font_1426139_jm7n2373nlh.css");
-@import url('../node_modules/vant/lib/index.css');
+@import url("../node_modules/vant/lib/index.css");
 * {
   margin: 0;
   padding: 0;
@@ -31,3 +31,14 @@ em {
   font-style: normal;
 }
 </style>
+<script>
+export default {
+  methods: {
+    login() {
+      // console.log(111);
+    this.$toast('提示文案111');
+      
+    }
+  }
+};
+</script>
