@@ -111,8 +111,8 @@ export default {
   }
 };
 </script>
-
-<style lang="less">
+<style lang="less" scoped>
+// scoped让样式只能对当前组件有作用
 @px: 360/100vw;
 .container {
   width: 360px;
