@@ -82,7 +82,7 @@ export default {
     // 提交表单时候触发的事件，该事件通过校验才会触发
     // values是表单返回的值，这里的values我们用不上，数据可以在this.form里面拿
     onSubmit(values) {
-      console.log("submit", this.form);
+      // console.log("submit", this.form);
       // 调用axios发起异步请求，类似$.ajax(类似不代表一样)
       this.$axios({
         // 接口地址
@@ -96,9 +96,12 @@ export default {
         // .then方法里面的函数就是成功的回调函数,axios没有succces
       }).then(res => {
         // 获取到返回的信息
-        const { message } = res.data;
+        const { message, data } = res.data;
         // 使用vant的弹窗提示用，success表示成功的弹窗
         this.$toast.success(message);
+        // 将用户信息存到本地存储
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        this.$router.push("/personal");
       });
     }
   }
