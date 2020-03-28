@@ -3,29 +3,26 @@
 
   <!-- 头部 -->
   <div class="container">
-    <!-- 顶部导航条 -->
-    <div class="navigate-bar">
-      <span class="iconfont arrow iconjiantou2" @click="$router.back()"></span>
-      <strong>个人中心</strong>
-      <span class="iconfont iconshouye" @click="$router.push('/')"></span>
-    </div>
-    <div class="header">
-      <div class="avatar">
-        <img :src="$axios.defaults.baseURL+userInfo.head_img" alt />
-        <!-- <img src="../assets/hua.jpg" alt=""> -->
-      </div>
-      <!-- 姓名 -->
-      <div class="profile">
-        <div>
-          <span class="inconfont iconxingbienan" v-if="userInfo.gender===1"></span>
-          <span class="inconfont iconxingbienv" v-if="userInfo.gender===0"></span>
-          {{userInfo.nickname}}
+   <Navigatebar title="个人中心" :showHome="true"></Navigatebar>
+    <router-link to="/edit-profile">
+      <div class="header">
+        <div class="avatar">
+          <img :src="$axios.defaults.baseURL+userInfo.head_img" alt />
+          <!-- <img src="../assets/hua.jpg" alt=""> -->
         </div>
-        <p>{{moment(userInfo.create_date).format('YYYY-MM-DD')}}</p>
+        <!-- 姓名 -->
+        <div class="profile">
+          <div>
+            <span class="inconfont iconxingbienan" v-if="userInfo.gender===1"></span>
+            <span class="inconfont iconxingbienv" v-if="userInfo.gender===0"></span>
+            {{userInfo.nickname}}
+          </div>
+          <p>{{moment(userInfo.create_date).format('YYYY-MM-DD')}}</p>
+        </div>
+        <!-- 右箭头的箭头图标 -->
+        <span class="iconfont arrow iconjiantou1"></span>
       </div>
-      <!-- 右箭头的箭头图标 -->
-      <span class="iconfont arrow iconjiantou1"></span>
-    </div>
+    </router-link>
     <!-- 用户列表 -->
     <!-- <div class="listbar"> -->
     <!-- <router-link to="#"> -->
@@ -45,7 +42,7 @@
 <script>
 import Listbar from "@/components/Listbar";
 import moment from "moment";
-import { userInfo } from "os";
+import Navigatebar from "@/components/Navigatebar"
 export default {
   data() {
     return {
@@ -68,7 +65,8 @@ export default {
     };
   },
   components: {
-    Listbar
+    Listbar,
+    Navigatebar
   },
   mounted() {
     const jsonstr = localStorage.getItem("userInfo");
@@ -88,10 +86,11 @@ export default {
   methods: {
     handlerClick() {
       //   console.log(111);
-      this.$dialog.confirm({
-        title: "标题",
-        message: "弹窗内容"
-      })
+      this.$dialog
+        .confirm({
+          title: "标题",
+          message: "弹窗内容"
+        })
         .then(() => {
           // on confirm  点击确认按钮触发的事件
           localStorage.removeItem("userInfo");
@@ -108,17 +107,7 @@ export default {
 <style lang="less" scoped>
 @px: 360/100vw;
 .container {
-  .navigate-bar {
-    padding: 0 20 / @px;
-    line-height: 48 / @px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    span {
-      font-size: 20px;
-    }
-  }
+
   .header {
     padding: 20 / @px;
     display: flex;
