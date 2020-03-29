@@ -13,7 +13,8 @@
     <van-dialog v-model="showpwd" title="修改密码" show-cancel-button @confirm="handleChangePassword">
       <van-field v-model="password" placeholder="请输入密码" type="password" />
     </van-dialog>
-    <Listbar lable="性别" :tips="['女','男'][userInfo.gender]"></Listbar>
+    <Listbar lable="性别" :tips="['女','男'][userInfo.gender]" @click.native="showGender=true"></Listbar>
+    <van-action-sheet close-on-click-action  v-model="showGender" :actions="actions" @select="onSelect" />
   </div>
   <!-- :tips="userInfo.nickname" -->
   <!-- :tips="['女','男'][userInfo.gender]" -->
@@ -31,6 +32,12 @@ export default {
       nickname: "",
       showpwd:false,
       password:"",
+      showGender:false,
+         actions: [
+        { name: '男',value:1 },
+        { name: '女',value:0},
+     
+      ]
     };
   },
   components: {
@@ -109,6 +116,17 @@ export default {
         },
         "密码修改成功"
       );
+    },
+     onSelect(item) {
+      // 默认情况下点击选项时不会自动收起
+      // 可以通过 close-on-click-action 属性开启自动收起
+     this.handEdit(
+          {
+           gender: item.value
+          },
+          "性别修改成功"
+        );
+        this.userInfo.gender=item.value
     }
   }
 };
