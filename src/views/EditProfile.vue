@@ -7,9 +7,12 @@
     </div>
     <Listbar lable="昵称" :tips="userInfo.nickname" @click.native="show=true"></Listbar>
     <van-dialog v-model="show" title="修改昵称" show-cancel-button @confirm="handleChangeNiname">
-      <van-field v-model="userJson.user.nickname" placeholder="请输入用户名" />
+      <van-field v-model="nickname" placeholder="请输入用户名" />
     </van-dialog>
-    <Listbar lable="密码" tips="******"></Listbar>
+    <Listbar lable="密码" tips="******" @click.native="showpwd=true"></Listbar>
+    <van-dialog v-model="showpwd" title="修改密码" show-cancel-button @confirm="handleChangePassword">
+      <van-field v-model="password" placeholder="请输入密码" type="password" />
+    </van-dialog>
     <Listbar lable="性别" :tips="['女','男'][userInfo.gender]"></Listbar>
   </div>
   <!-- :tips="userInfo.nickname" -->
@@ -24,7 +27,10 @@ export default {
     return {
       userInfo: {},
       userJson: {},
-      show: false
+      show: false,
+      nickname: "",
+      showpwd:false,
+      password:"",
     };
   },
   components: {
@@ -44,6 +50,7 @@ export default {
       // console.log(res);
       const { data } = res.data;
       this.userInfo = data;
+      this.nickname = data.nickname;
       // console.log( this.userInfo);
     });
   },
@@ -88,13 +95,20 @@ export default {
     handleChangeNiname() {
       this.handEdit(
         {
-          nickname: this.userJson.user.nickname
+          nickname: this.nickname
         },
         "昵称修改成功"
       );
-      
 
-      this.userInfo.nickname = this.userJson.user.nickname;
+      this.userInfo.nickname = this.nickname;
+    },
+    handleChangePassword(){
+        this.handEdit(
+        {
+         password: this.password
+        },
+        "密码修改成功"
+      );
     }
   }
 };
