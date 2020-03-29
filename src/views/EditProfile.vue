@@ -129,7 +129,7 @@ export default {
         this.userInfo.gender=item.value
     }
   }
-};
+}; 
 </script>
 
 <style lang="less" scoped>
