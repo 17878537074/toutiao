@@ -5,7 +5,10 @@
       <img :src="$axios.defaults.baseURL+userInfo.head_img" alt />
       <van-uploader class="upload" :after-read="afterRead" />
     </div>
-    <Listbar lable="昵称" :tips="userInfo.nickname"></Listbar>
+    <Listbar lable="昵称" :tips="userInfo.nickname" @click.native="show=true"></Listbar>
+    <van-dialog v-model="show" title="修改昵称" show-cancel-button @confirm="handleChangeNiname">
+      <van-field v-model="userJson.user.nickname" placeholder="请输入用户名" />
+    </van-dialog>
     <Listbar lable="密码" tips="******"></Listbar>
     <Listbar lable="性别" :tips="['女','男'][userInfo.gender]"></Listbar>
   </div>
@@ -20,7 +23,8 @@ export default {
   data() {
     return {
       userInfo: {},
-      userJson: {}
+      userJson: {},
+      show: false
     };
   },
   components: {
@@ -28,19 +32,19 @@ export default {
     Listbar
   },
   mounted() {
-    const userJson = JSON.parse(localStorage.getItem("userInfo"));
-    this.userJson = userJson;
+    const userJsons = JSON.parse(localStorage.getItem("userInfo"));
+    this.userJson = userJsons;
     // console.log(userJson);
-
     this.$axios({
-      url: "/user/" + userJson.user.id,
+      url: "/user/" + this.userJson.user.id,
       headers: {
-        Authorization: userJson.token
+        Authorization: this.userJson.token
       }
     }).then(res => {
-      console.log(res);
+      // console.log(res);
       const { data } = res.data;
       this.userInfo = data;
+      // console.log( this.userInfo);
     });
   },
   methods: {
@@ -60,13 +64,15 @@ export default {
         // console.log(res);
         const { url } = res.data.data;
         this.userInfo.head_img = url;
-        this.handEdit({
-          head_img: url
-        });
+        this.handEdit(
+          {
+            head_img: url
+          },
+          "头像修改成功"
+        );
       });
-      
     },
-    handEdit(data) {
+    handEdit(data, hint) {
       this.$axios({
         url: "/user_update/" + this.userInfo.id,
         method: "post",
@@ -76,8 +82,19 @@ export default {
         data
       }).then(res => {
         // console.log(res);
-        this.$toast.success("头像修改成功");
+        this.$toast.success(hint);
       });
+    },
+    handleChangeNiname() {
+      this.handEdit(
+        {
+          nickname: this.userJson.user.nickname
+        },
+        "昵称修改成功"
+      );
+      
+
+      this.userInfo.nickname = this.userJson.user.nickname;
     }
   }
 };
@@ -96,7 +113,7 @@ export default {
     width: 70 / @px;
     height: 70 / @px;
     border-radius: 50%;
-    background: red;
+    background: skyblue;
     object-fit: contain;
   }
   .upload {

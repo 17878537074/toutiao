@@ -120,7 +120,7 @@ export default {
         width: 70 / @px;
         height: 70 / @px;
         border-radius: 50%;
-        background: red;
+        background: skyblue;
         object-fit: contain;
       }
     }

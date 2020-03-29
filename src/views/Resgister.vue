@@ -95,7 +95,7 @@ export default {
       this.$axios({
         // 接口地址
         // url: "http://hmtoutiao-api.atlansic.com/register",
-        url: "http://127.0.0.1:3000/register",
+        url: "/register",
         // 声明请求的方法为post请求(一定要注册这个method没有s)
         // 跟vue的methods属性毫无关系
         method: "POST",
