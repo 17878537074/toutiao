@@ -23,14 +23,23 @@ const routes = [
 	{
 		path: "/personal",
 		component: () => import("@/views/Personal")
-	},{
+	},
+	// 个人信息修改路由
+	{
 		path:"/edit-profile",
 		component:()=>import("@/views/EditProfile")
 
 	},
+	// 我的关注页路由
 	{
 		path:"/follow",
 		component:()=>import("@/views/Follow")
+
+	},
+	// 我的跟帖页路由
+	{
+		path:"/comments",
+		component:()=>import("@/views/Comments")
 
 	}
 
