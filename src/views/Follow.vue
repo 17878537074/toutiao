@@ -8,7 +8,7 @@
         <div>{{item.nickname}}</div>
         <p>{{moment(item.create_date).format("YYYY-MM-DD hh:mm:ss")}}</p>
       </div>
-      <span class="cencel">取消关注</span>
+      <span class="cencel" @click="handlerCancel(item.id,index)">取消关注</span>
     </div>
   </div>
 </template>
@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       userInfo: "",
-      follow:[],
+      follow: [],
       moment
     };
   },
@@ -33,15 +33,40 @@ export default {
     this.userInfo = userInfo;
     this.$axios({
       url: "/user_follows",
-      method:"get",
-       headers: {
+      method: "get",
+      headers: {
         Authorization: this.userInfo.token
-      },
-    }).then(res=>{
-           console.log(res);
-        const {data} =res.data;
-           this.follow = data;
+      }
+    }).then(res => {
+      console.log(res);
+      const { data } = res.data;
+      this.follow = data;
     });
+  },
+  methods: {
+    handlerCancel(id, index) {
+      // 取消关注前先弹出框询问用户是否确认取消
+      this.$dialog
+        .confirm({
+          title: "提示",
+          message: "确认取消关注"
+        })
+        .then(() => {
+          this.$axios({
+            url: "/user_unfollow/" + id,
+            headers: {
+              Authorization: this.userInfo.token
+            }
+          }).then(res => {
+            //   console.log(res);
+            this.$toast.success("取消关注成功");
+            this.follow.splice(index, 1);
+          });
+        })
+        .catch(() => {
+          // on cancel
+        });
+    }
   }
 };
 </script>
