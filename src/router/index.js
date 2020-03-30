@@ -24,7 +24,7 @@ const routes = [
 		path: "/personal",
 		component: () => import("@/views/Personal")
 	},
-	// 个人信息修改路由
+	// 个人信息
 	{
 		path:"/edit-profile",
 		component:()=>import("@/views/EditProfile")
@@ -40,6 +40,12 @@ const routes = [
 	{
 		path:"/comments",
 		component:()=>import("@/views/Comments")
+
+	},
+	// 我的跟帖页路由
+	{
+		path:"/star",
+		component:()=>import("@/views/Star")
 
 	}
 
