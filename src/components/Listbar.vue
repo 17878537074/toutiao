@@ -1,6 +1,6 @@
 <template>
   <div class="listbar">
-    <router-link to="#">
+    <router-link :to="path ||'#'">
       <!-- 左边用户功能 -->
       <div>{{lable}}</div>
       <div class="tips">
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-   props:["lable","tips"]
+   props:["lable","tips","path"]
 };
 </script>
 

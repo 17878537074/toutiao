@@ -4,6 +4,7 @@ import router from './router'
 import Vant from 'vant'
 import axios from "axios";
 
+
 // 绑定到原型
 Vue.prototype.$axios = axios;
 

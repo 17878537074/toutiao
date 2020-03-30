@@ -34,7 +34,7 @@
     <!-- </div> -->
     <!-- </router-link> -->
     <!-- </div> -->
-    <Listbar v-for="(item,index) in rows" :key="index" :lable="item.lable" :tips="item.tips"></Listbar>
+    <Listbar v-for="(item,index) in rows" :key="index" :lable="item.lable" :tips="item.tips" :path="item.path"></Listbar>
     <Listbar lable="退出" @click.native="handlerClick"></Listbar>
   </div>
 </template>
@@ -49,15 +49,18 @@ export default {
       rows: [
         {
           lable: "我的关注",
-          tips: "关注的用户"
+          tips: "关注的用户",
+          path:"/follow"
         },
         {
           lable: "我的跟帖",
-          tips: "跟帖回复"
+          tips: "跟帖回复",
+          path:"/comments"
         },
         {
           lable: "我的收藏",
-          tips: "文章视频"
+          tips: "文章视频",
+          path:"/star"
         }
       ],
       userInfo: {},
@@ -88,8 +91,8 @@ export default {
       //   console.log(111);
       this.$dialog
         .confirm({
-          title: "标题",
-          message: "弹窗内容"
+          title: "退出",
+          message: "确认退出"
         })
         .then(() => {
           // on confirm  点击确认按钮触发的事件
