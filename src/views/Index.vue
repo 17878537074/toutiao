@@ -14,7 +14,9 @@
     <!-- Tab栏 -->
     <van-tabs v-model="active" sticky swipeable>
       <van-tab v-for="(item,index) in data" :key="index" :title="item">
-        <p v-for="index in 100" :key="index">内容 {{ index }}</p>
+       <PostItem></PostItem>
+       <PostImages></PostImages>
+       <PostVideo></PostVideo>
       </van-tab>
     </van-tabs>
   </div>
@@ -22,6 +24,9 @@
 
 <script>
 import { log } from 'util';
+import PostItem from "@/components/PostItem"
+import PostImages from "@/components/PostImages"
+import PostVideo from "@/components/PostVideo"
 export default {
     data() {
         return {
@@ -39,6 +44,11 @@ export default {
            
       }
     },
+    components:{
+      PostItem,
+      PostImages,
+      PostVideo
+    }
 };
 </script>
 
