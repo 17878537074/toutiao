@@ -22,32 +22,59 @@ const routes = [
 	// 个人中心路由
 	{
 		path: "/personal",
-		component: () => import("@/views/Personal")
+		component: () => import("@/views/Personal"),
+		// meta可以自定义数据，可以选择在路由上任意添加自己的数据
+		meta:{
+			// 代表这个页面需要授权
+			authorization:true
+		}
 	},
 	// 个人信息
 	{
 		path:"/edit-profile",
-		component:()=>import("@/views/EditProfile")
+		component:()=>import("@/views/EditProfile"),
+		// meta可以自定义数据，可以选择在路由上任意添加自己的数据
+		meta:{
+			// 代表这个页面需要授权
+			authorization:true
+		}
 
 	},
 	// 我的关注页路由
 	{
 		path:"/follow",
-		component:()=>import("@/views/Follow")
+		component:()=>import("@/views/Follow"),
+		// meta可以自定义数据，可以选择在路由上任意添加自己的数据
+		meta:{
+			// 代表这个页面需要授权
+			authorization:true
+		}
 
 	},
 	// 我的跟帖页路由
 	{
 		path:"/comments",
-		component:()=>import("@/views/Comments")
+		component:()=>import("@/views/Comments"),
+		// meta可以自定义数据，可以选择在路由上任意添加自己的数据
+		meta:{
+			// 代表这个页面需要授权
+			authorization:true
+		}
 
 	},
 	// 我的跟帖页路由
 	{
 		path:"/star",
-		component:()=>import("@/views/Star")
+		component:()=>import("@/views/Star"),
+		// meta可以自定义数据，可以选择在路由上任意添加自己的数据
+		meta:{
+			// 代表这个页面需要授权
+			authorization:true
+		}
 
-	}
+	},{
+		path:"/index",
+		component:()=>import("@/views/Index"),}
 
 ]
 
