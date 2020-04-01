@@ -22,7 +22,7 @@ export default {};
 .video {
   padding: 20 / @px;
   border-bottom: 1px solid #eee;
-  h4 {
+  h4 { 
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -44,11 +44,18 @@ export default {};
          width: 55/@px;
          height: 55/@px;
          border-radius: 50%;
-         background: rgba(255, 0, 0, .5);
+         background: rgba(0, 0, 0, .5);
          position: absolute;
          left: 50%;
          top: 50%;
          transform: translateX(-27/@px) translateY(-27/@px);
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         .iconshipin{
+             color: #fff;
+             font-size: 32px;
+         }
      }
   }
     p {
