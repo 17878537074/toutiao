@@ -17,12 +17,12 @@
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
           <van-list
             :immediate-check="false"
-            v-model="loading"
-            :finished="finished"
+            v-model="categories[active].loading"
+            :finished="categories[active].finished"
             finished-text="没有更多了"
             @load="onLoad"
           >
-            <div v-for="(item,index) in list" :key="index">
+            <div v-for="(item,index) in categories[active].posts" :key="index">
               <PostItem
                 v-if="item.type==1 && item.cover.length > 0 && item.cover.length < 3"
                 :data="item"
@@ -58,10 +58,10 @@ export default {
         "模特",
         "V"
       ],
-      list: [],
+      // list: [],
       active: 0,
-      loading: false,
-      finished: false,
+      // loading: false,
+      // finished: false,
       refreshing: false,
       categoryId: 999
     };
@@ -73,6 +73,7 @@ export default {
         // console.log(111);
         this.$router.push("/栏目管理");
       }
+      this.getList();
     }
   },
   mounted() {
@@ -105,8 +106,10 @@ export default {
     }).then(res => {
       // console.log(res);
       const { data } = res.data;
-      this.list = data;
-      // console.log( this.list);
+      // this.list = data;
+      this.categories[this.active].posts = data;
+      // console.log(this.categories);
+      this.categories = [...this.categories];
     });
   },
   components: {
@@ -119,6 +122,8 @@ export default {
     handercategories() {
       this.categories = this.categories.map(v => {
         v.pageIndex = 1;
+        v.posts = [];
+        (v.finished = false), (v.loading = false);
         return v;
       });
       // console.log(this.categories);
@@ -158,22 +163,34 @@ export default {
       //     this.finished = true;
       //   }
       // }, 1000);
+      this.categories[this.active].pageIndex += 1;
+      this.getList();
+    },
+    getList() {
+      if (this.categories[this.active].finished) {
+        return;
+      }
+      const { pageIndex, id, posts } = this.categories[this.active];
+      // console.log(id);
+
       this.$axios({
         url: "/post",
         params: {
-          pageIndex: this.categories[this.active].pageIndex + 1,
+          pageIndex: pageIndex,
           pageSize: 5,
-          category: this.categoryId
+          category: id
         }
       }).then(res => {
         // console.log(res);
         const { data, total } = res.data;
-        this.list=[...this.list,...data]
-        this.finished = true;
-        this.loading = false;
-        // if(this.list.length==total){
+        this.categories[this.active].posts = [...posts, ...data];
+        this.categories[this.active].loading = false;
         // this.finished = true;
-        // }
+        if (this.categories[this.active].posts.length == total) {
+          this.categories[this.active].finished = true;
+          this.categories = [...this.categories];
+        }
+        this.categories = [...this.categories];
       });
     },
     onRefresh() {
