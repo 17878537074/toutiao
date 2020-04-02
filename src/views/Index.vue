@@ -13,10 +13,23 @@
     </div>
     <!-- Tab栏 -->
     <van-tabs v-model="active" sticky swipeable>
-      <van-tab v-for="(item,index) in data" :key="index" :title="item">
+      <van-tab v-for="(item,index) in categories" :key="index" :title="item.name">
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-            <PostItem v-for="(item,index) in list" :key="index"></PostItem>
+          <van-list
+            :immediate-check="false"
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+          >
+            <div v-for="(item,index) in list" :key="index">
+              <PostItem
+                v-if="item.type==1 && item.cover.length > 0 && item.cover.length < 3"
+                :data="item"
+              ></PostItem>
+              <PostImages v-if="item.type==1&&item.cover.length >= 3" :data="item"></PostImages>
+              <PostVideo v-if="item.type==2" :data="item"></PostVideo>
+            </div>
           </van-list>
         </van-pull-refresh>
         <!-- <PostImages></PostImages>
@@ -34,7 +47,7 @@ import PostVideo from "@/components/PostVideo";
 export default {
   data() {
     return {
-      data: [
+      categories: [
         "关注",
         "娱乐",
         "体育",
@@ -45,21 +58,56 @@ export default {
         "模特",
         "V"
       ],
-      list: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      list: [],
       active: 0,
       loading: false,
       finished: false,
-      refreshing: false
+      refreshing: false,
+      categoryId: 999
     };
   },
   watch: {
     active() {
       //  console.log(this.active);
-      if (this.active === this.data.length - 1) {
-        console.log(111);
+      if (this.active === this.categories.length - 1) {
+        // console.log(111);
         this.$router.push("/栏目管理");
       }
     }
+  },
+  mounted() {
+    // 请求前先判断本地是否有栏目的数据
+    const categories = JSON.parse(localStorage.getItem("categories"));
+    const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+    if (categories) {
+      if (categories && categories[0].name !== "关注" && token) {
+        this.getcategories(token);
+        return;
+        // this.categories = categories;
+      }
+      if (categories && !token && categories[0].name === "关注") {
+        this.getcategories();
+        return;
+      }
+      this.categories = categories;
+      this.handercategories();
+    } else {
+      this.getcategories(token);
+    }
+    // 页面一开始就请求头条的数据
+    this.$axios({
+      url: "/post",
+      params: {
+        // pageIndex:this.categories[this.active].pageIndex,
+        pageSize: 5,
+        category: this.categoryId
+      }
+    }).then(res => {
+      // console.log(res);
+      const { data } = res.data;
+      this.list = data;
+      // console.log( this.list);
+    });
   },
   components: {
     PostItem,
@@ -68,22 +116,65 @@ export default {
     refreshing: false
   },
   methods: {
+    handercategories() {
+      this.categories = this.categories.map(v => {
+        v.pageIndex = 1;
+        return v;
+      });
+      // console.log(this.categories);
+    },
+    getcategories(token) {
+      const config = {
+        url: "/category"
+      };
+      if (token) {
+        config.headers = {
+          Authorization: token
+        };
+      }
+      this.$axios(config).then(res => {
+        // console.log(res);
+
+        const { data } = res.data;
+        data.push({
+          name: "V"
+        });
+        this.categories = data;
+        localStorage.setItem("categories", JSON.stringify(data));
+        this.handercategories();
+      });
+    },
     onLoad() {
       // 异步更新数据
       // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(1);
+      // setTimeout(() => {
+      //   for (let i = 0; i < 10; i++) {
+      //     this.list.push(1);
+      //   }
+      //   // 加载状态结束
+      //   this.loading = false;
+      //   // 数据全部加载完成
+      //   if (this.list.length >= 40) {
+      //     this.finished = true;
+      //   }
+      // }, 1000);
+      this.$axios({
+        url: "/post",
+        params: {
+          pageIndex: this.categories[this.active].pageIndex + 1,
+          pageSize: 5,
+          category: this.categoryId
         }
-
-        // 加载状态结束
+      }).then(res => {
+        // console.log(res);
+        const { data, total } = res.data;
+        this.list=[...this.list,...data]
+        this.finished = true;
         this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
+        // if(this.list.length==total){
+        // this.finished = true;
+        // }
+      });
     },
     onRefresh() {
       // 表示加载完毕

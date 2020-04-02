@@ -2,17 +2,24 @@
   <div>
     <!-- 多于三张图片的结构 -->
     <div class="imgList">
-        <h4>迪丽热巴时尚周刊</h4>
-        <div class="images">
-          <img src="../assets/hua.jpg" alt v-for="(item,index) in [1,2,3]" :key="index" />
-        </div>
-        <p>火星周报 52帖</p>
+      <h4>{{data.title}}</h4>
+      <div class="images">
+        <img
+          :src="$axios.defaults.baseURL + item.url"
+          alt
+          v-for="(item,index) in data.cover"
+          :key="index"
+        />
+      </div>
+      <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["data"]
+};
 </script>
 
 <style lang="less" scoped>

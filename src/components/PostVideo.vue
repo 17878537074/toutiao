@@ -1,20 +1,23 @@
 <template>
   <div>
     <div class="video">
-      <h4>迪丽热巴时尚周刊</h4>
+      <h4>{{data.title}}</h4>
       <div class="cover">
-        <img src="../assets/hua.jpg" alt />
+        <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
         <div class="cover-layer">
           <span class="iconfont iconshipin"></span>
         </div>
       </div>
-    <p>火星周报 52帖</p>
+         <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+props: ['data'],
+
+};
 </script>
 
 <style lang="less" scoped>

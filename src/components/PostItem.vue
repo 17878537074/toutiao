@@ -3,19 +3,18 @@
     <div class="star-itemm imgText">
       <div class="imgText-left">
         <h4>
-          林志玲穿透视黑纱裙米兰看秀
-          腹部微隆显孕味
+        {{data.title}}
         </h4>
-        <p>火星时报    52跟帖</p>
+        <p>{{data.user.nickname}}    {{data.comment_length}}跟帖</p>
       </div>
-      <img src="../assets/hua.jpg" alt />
+      <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-
+props: ['data'],
 };
 </script>
 
