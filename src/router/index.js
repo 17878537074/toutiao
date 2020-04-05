@@ -74,7 +74,11 @@ const routes = [
 
 	},{
 		path:"/index",
-		component:()=>import("@/views/Index"),}
+		component:()=>import("@/views/Index"),
+	},{
+		path:"/category",
+		component:()=>import("@/views/Category"),
+	}
 
 ]
 

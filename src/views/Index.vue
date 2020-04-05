@@ -75,7 +75,7 @@ export default {
 
       if (this.active === this.categories.length - 1) {
         // console.log(111);
-        this.$router.push("/栏目管理");
+        this.$router.push("/category");
       }
 
       // 当栏目切换的时候，重新 请求当前页面的数据
@@ -145,7 +145,9 @@ export default {
         v.pageIndex = 1;
         v.posts = [];
         v.scrollY = 0; // 给每个栏目添加一个滚动条的高度
-        (v.finished = false), (v.loading = false);
+        v.finished = false;
+        v.loading = false;
+        v.isload = false;//当前栏
         return v;
       });
       // console.log(this.categories);
@@ -243,7 +245,7 @@ export default {
     // 监听tab滚动的事件
     handelScroll(data) {
       // console.log(data);
-      
+
       // 因为栏目不管是从本地获取或者请求接口也好，都是需要时间，
       // 所以需要等this.categories有值时候才设置滚动条的高度s
       if (this.categories.length === 0) return;
