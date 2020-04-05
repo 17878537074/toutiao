@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <span class="iconfont iconnew"></span>
-      <router-link to="#" class="search">
+      <router-link to="/search" class="search">
         <span class="inconfont iconsearch"></span>
         <i>搜索新闻</i>
       </router-link>
@@ -15,7 +15,7 @@
     <!-- sticky：是否使用粘性定位布局 -->
     <!-- swipeable: 是否开启手势滑动切换 -->
     <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
-      <van-tab v-for="(item,index) in categories" :key="index" :title="item.name">
+      <van-tab v-for="(item,index) in categories" v-if="item.is_top===1 || item.name==='V'" :key="index" :title="item.name">
         <!-- 下拉刷新 -->
 
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -70,10 +70,13 @@ export default {
     // 监听tab栏的切换
 
     active() {
+      const arr = this.categories.filter(v=>{
+            return v.is_top || v.name ==="V";
+      });
       //  console.log(this.active);
       // 判断如果点击的是最后一个图标，跳转到栏目管理页
 
-      if (this.active === this.categories.length - 1) {
+      if (this.active === arr.length - 1) {
         // console.log(111);
         this.$router.push("/category");
       }
@@ -83,7 +86,7 @@ export default {
       setTimeout(() => {
         // 页面滚动到当前栏目下的scrollY值
         window.scrollTo(0, this.categories[this.active].scrollY);
-      }, 0);
+      }, 200);
     }
   },
   mounted() {
@@ -147,7 +150,7 @@ export default {
         v.scrollY = 0; // 给每个栏目添加一个滚动条的高度
         v.finished = false;
         v.loading = false;
-        v.isload = false;//当前栏
+        v.isload = false; //当前栏
         return v;
       });
       // console.log(this.categories);
@@ -178,13 +181,18 @@ export default {
       });
     },
     getList() {
+      // 当前栏目的id,pageIndex,finished
+      const { pageIndex, id, name, isload } = this.categories[this.active];
+      if (isload) return;
+      this.categories[this.active].isload = true;
+      this.categories[this.active].pageIndex += 1;
+
       if (this.categories[this.active].finished) {
         return;
       }
-      // 当前栏目的id,pageIndex,finished
-      const { pageIndex, id, name } = this.categories[this.active];
       // console.log(id);
       // 请求文章的配置
+
       const configs = {
         url: "/post",
         params: {
@@ -222,6 +230,7 @@ export default {
           this.categories[this.active].finished = true;
           this.categories = [...this.categories];
         }
+        this.categories[this.active].isload = false;
       });
     },
     onLoad() {
@@ -238,7 +247,6 @@ export default {
       //     this.finished = true;
       //   }
       // }, 1000);
-      this.categories[this.active].pageIndex += 1;
       this.getList();
     },
 

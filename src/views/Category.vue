@@ -2,7 +2,7 @@
   <div>
     <Navigatebar title="栏目管理"></Navigatebar>
     <div class="content">
-      <p class="decs">点击删除频道</p>
+      <p class="decs">点击删除以下频道</p>
       <div class="list">
         <span
           class="item"
@@ -12,7 +12,7 @@
           @click="handDel(item,index)"
         >{{item.name}}</span>
       </div>
-      <p class="decs">点击添加频道</p>
+      <p class="decs">点击添加以下频道</p>
       <div class="list">
         <span
           class="item"
@@ -104,6 +104,8 @@ export default {
   }
 }
 .active {
-  background: #eee;
+  border-color: #ddd;
+  //   background: #eee;
+  color: #999;
 }
 </style>
