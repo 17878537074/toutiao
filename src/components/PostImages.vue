@@ -1,19 +1,21 @@
 <template>
-  <div>
-    <!-- 多于三张图片的结构 -->
-    <div class="imgList">
-      <h4>{{data.title}}</h4>
-      <div class="images">
-        <img
-          :src="$axios.defaults.baseURL + item.url"
-          alt
-          v-for="(item,index) in data.cover"
-          :key="index"
-        />
+  <router-link :to="`/post/${data.id}`">
+    <div>
+      <!-- 多于三张图片的结构 -->
+      <div class="imgList">
+        <h4>{{data.title}}</h4>
+        <div class="images">
+          <img
+            :src="$axios.defaults.baseURL + item.url"
+            alt
+            v-for="(item,index) in data.cover"
+            :key="index"
+          />
+        </div>
+        <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
       </div>
-      <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>

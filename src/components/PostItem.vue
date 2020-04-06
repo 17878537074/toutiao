@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <div class="star-itemm imgText">
-      <div class="imgText-left">
-        <h4>
-        {{data.title}}
-        </h4>
-        <p>{{data.user.nickname}}    {{data.comment_length}}跟帖</p>
+  <router-link :to="`/post/${data.id}`">
+    <div>
+      <div class="star-itemm imgText">
+        <div class="imgText-left">
+          <h4>{{data.title}}</h4>
+          <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
+        </div>
+        <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
       </div>
-      <img :src="$axios.defaults.baseURL + data.cover[0].url" alt />
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
 export default {
-props: ['data'],
+  props: ["data"]
 };
 </script>
 

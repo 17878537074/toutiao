@@ -1,4 +1,5 @@
 <template>
+     <router-link :to="`/post/${data.id}`"> 
   <div>
     <div class="video">
       <h4>{{data.title}}</h4>
@@ -11,6 +12,7 @@
          <p>{{data.user.nickname}} {{data.comment_length}}跟帖</p>
     </div>
   </div>
+  </router-link>
 </template>
 
 <script>
