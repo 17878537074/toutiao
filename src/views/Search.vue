@@ -1,38 +1,116 @@
 <template>
   <div>
     <div class="header">
-      <span class="iconfont iconjiantou2"></span>
+      <span class="iconfont iconjiantou2" @click="$router.back()"></span>
       <div class="search-wraper">
         <span class="inconfont iconsearch"></span>
-        <input type="text" placeholder="请输入搜索关键字" />
+        <input type="text" placeholder="请输入搜索关键字" autofocus v-model="value" @keyup.enter="handerSearch" />
       </div>
-      <span>搜索</span>
+      <span @click="handerSearch">搜索</span>
     </div>
     <div class="history">
       <div class="title">
         <strong>历史记录</strong>
-        <span class="inconfont iconicon-test"></span>
+        <span class="inconfont iconicon-test" @click="handerClear"></span>
       </div>
       <div class="hitory-list">
-        <span class="item">陌上花开</span>
-        <span class="item">陌上</span>
-        <span class="item">陌上花</span>
-        <span class="item">陌花开</span>
-        <span class="item">陌上开</span>
-        <span class="item">陌上花开</span>
+        <span
+          class="item"
+          v-for="(item,inedx) in histories"
+          :key="inedx"
+          @click="handerRecord(item)"
+        >{{item}}</span>
       </div>
     </div>
-    <div class="result-layer">
-        <div class="result-item" v-for="index in 10">
-            <p >今日关注依然是没过股票的走向</p>
-            <span class="iconfont iconjiantou1"></span>
-        </div>
+    <div class="result-layer" v-if="showLayer">
+      <div v-for="(item,index) in list" :key="index">
+        <PostItem
+          v-if="item.type==1 && item.cover.length > 0 && item.cover.length < 3"
+          :data="item"
+        ></PostItem>
+        <PostImages v-if="item.type==1&&item.cover.length >= 3" :data="item"></PostImages>
+        <PostVideo v-if="item.type==2" :data="item"></PostVideo>
+      </div>
+      <div class="empty" v-if="list.length===0">
+        没有找到你想要的内容~
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import { log } from "util";
+import PostItem from "@/components/PostItem";
+import PostImages from "@/components/PostImages";
+import PostVideo from "@/components/PostVideo";
+export default {
+  components: {
+    PostItem,
+    PostImages,
+    PostVideo
+  },
+  data() {
+    return {
+      // 双向数据绑定输入框的值
+      value: "",
+      histories: JSON.parse(localStorage.getItem("histories")) || [],
+      list: [],
+      showLayer: false
+    };
+  },
+  methods: {
+    handerSearch() {
+      // console.log(this.value);
+      if (this.value == "") return;
+      //先获取本地的搜索记录，如果没有就是等于一个空数组；
+      // this.histories = JSON.parse(localStorage.getItem("histories")) || [];
+      // 把关键字添加到本地
+      this.histories.unshift(this.value);
+      // console.log(histories);
+      // 数组去重
+      this.histories = [...new Set(this.histories)];
+
+      localStorage.setItem("histories", JSON.stringify(this.histories));
+      // this.value = "";
+      this.getList();
+    },
+    handerClear() {
+      this.histories = [];
+      localStorage.removeItem("histories");
+    },
+    // 点击历史栏列表的选项
+    handerRecord(item) {
+      this.value = item;
+      // this.getList;
+      this.getList();
+    },
+    getList() {
+      this.$axios({
+        url: "/post_search",
+        params: {
+          keyword: this.value
+        }
+      }).then(res => {
+        // console.log(res);
+        // 是否展示浮层
+        this.showLayer = true;
+        // 把历史记录数据结构出来
+        const { data } = res.data;
+        this.list = data;
+        console.log(this.list);
+      });
+    }
+  },
+  watch: {
+    //  监听输入框的输入，如果值为空，清空文章列表并且隐藏文章列表
+    value() {
+      if (this.value === "") {
+        this.list = [];
+        this.showLayer = false;  
+      }
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -73,11 +151,11 @@ export default {};
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .iconicon-test {
-      padding: 1px;
-      border: 1px solid red;
-      border-radius: 50px;
-    }
+    // .iconicon-test {
+    //   padding: 1px;
+    //   border: 1px solid red;
+    //   border-radius: 50px;
+    // }
   }
   .hitory-list {
     padding: 0 10 / @px;
@@ -92,30 +170,35 @@ export default {};
     }
   }
 }
-.result-layer{
-    padding: 20/@px;
-    position: absolute;
-    top: 54/@px;
-    left: 0;
-    bottom:0;
-    width: 100%;
-    background: white;
-    overflow-y: auto;
-    .result-item{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10/@px 0;
-        border-bottom: 1px solid #eee;
-        p{
-            flex: 1;
-            margin-right: 10/@px;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        span{
-            color:#999
-        }
+.result-layer {
+  // padding: 20 / @px;
+  position: absolute;
+  top: 54 / @px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  overflow-y: auto;
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10 / @px 0;
+    border-bottom: 1px solid #eee;
+    p {
+      flex: 1;
+      margin-right: 10 / @px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
+    span {
+      color: #999;
+    }
+  }
+}
+.empty{
+  text-align: center;
+  color: #999;
+  line-height: 50px;
 }
 </style>
