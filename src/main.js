@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import Vant, { Toast } from 'vant'
 import axios from "axios";
+let app; 
 
 
 // 绑定到原型
@@ -37,16 +38,29 @@ axios.interceptors.response.use(res => {
   // 如果请求返回的结果是错误的，会进入到错误的处理函数中
   // error是js原生的错误对象，我们可以用过error.response可以获取到详细的信息
   console.log(error.response);
-  
+
   const { statusCode, message } = error.response.data;
   if (statusCode === 400) {
     Toast.fail(message);
+  }
+  // 如果不是登录状态的话，点击关注跳转到登录页
+  if (statusCode === 403) {
+    Toast.fail(message);
+    // app.$router.push("/login")
+    app.$router.push({
+      path:"/login",
+      query:{
+        // app.$router.path是上一个页面的地址参数
+        return_url:app.$route.path
+      }
+    });
+    
   }
   return Promise.reject(error)
 });
 Vue.config.productionTip = false
 
-new Vue({
+app=new Vue({
   router,
   render: h => h(App),
 

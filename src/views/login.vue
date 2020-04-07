@@ -101,7 +101,11 @@ export default {
         this.$toast.success(message);
         // 将用户信息存到本地存储
         localStorage.setItem("userInfo", JSON.stringify(data));
-        this.$router.push("/personal");
+        // 判断地址栏有没有带query_url这个属性，有的话跳回这个属性下的路径，没有就跳回个人中心
+        const { return_url } = this.$route.query;
+        // console.log(return_url);
+
+        this.$router.replace(return_url || "/personal");
       });
     }
   }

@@ -73,7 +73,7 @@ const routes = [
 		}
 
 	},{
-		path:"/index",
+		path:"/",
 		component:()=>import("@/views/Index"),
 	},{
 		path:"/category",
