@@ -18,9 +18,9 @@
       >{{post.user.nickname}} {{moment(post.create_date).format("YYYY-MM-DD hh:mm:ss")}}</p>
       <div class="content" v-html="post.content"></div>
       <div class="actions">
-        <div class="actions-item">
+        <div class="actions-item" @click="handerlike">
           <span class="iconfont icondianzan"></span>
-          <i>{{post.comment_length>100?'99+':post.comment_length}}</i>
+          <i>{{post.like_length?post.like_length:"0"}}</i>
         </div>
         <div class="actions-item">
           <span class="iconfont iconweixin"></span>
@@ -32,7 +32,7 @@
       <div class="comment-input">发布评论</div>
       <div class="icons">
         <span class="iconfont iconpinglun-"></span>
-        <i>{{Number(post.has_like)}}</i>
+        <i>{{post.comment_length>100?'99+':post.comment_length}}</i>
       </div>
       <div class="icons">
         <span class="iconfont iconshoucang" :class="post.has_star ? 'active':''"></span>
@@ -54,14 +54,25 @@ export default {
       post: {
         user: {}
       },
-      moment
+      moment,
+      token: ""
     };
   },
   components: {},
   mounted() {
-    this.$axios({
+    // 解构本地的token
+    const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+    this.token = token;
+    // 如果有token有值就给头信息加上token
+    const config = {
       url: "/post/" + this.$route.params.id
-    }).then(res => {
+    };
+    if (token) {
+      config.headers = {
+        Authorization: token
+      };
+    }
+    this.$axios(config).then(res => {
       // console.log(res);
       const { data } = res.data;
       this.post = data;
@@ -69,21 +80,48 @@ export default {
   },
   methods: {
     handerfollow() {
-      // 解构本地的token
-      const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+      let url = "";
+      // 先判断是当前的状态是关注还是非关注
+      if (this.post.has_follow) {
+        url = "/user_unfollow/" + this.post.user.id;
+      } else {
+        url = "/user_follows/" + this.post.user.id;
+      }
       this.$axios({
-        url: "/user_follows/" + this.post.user.id,
+        url,
         headers: {
-          Authorization: token
+          Authorization: this.token
         }
       }).then(res => {
         // console.log(res);
         // 关注成功后，按钮的状态改变
         // console.log(this.post.user.id);
-        console.log(res);
-        
-        this.post.has_follow=true;
-        this.$toast.success("关注成功");
+        // console.log(res);
+        this.post.has_follow = !this.post.has_follow;
+        if (this.post.has_follow) {
+          this.$toast.success("关注成功");
+        } else {
+          this.$toast.success("取消关注成功");
+        }
+      });
+    },
+    //文章点赞
+    handerlike() {
+      this.$axios({
+        url: "/post_like/" + this.post.id,
+        headers: {
+          Authorization: this.token
+        }
+      }).then(res => {
+        // console.log(res);
+        this.post.has_like = !this.post.has_like;
+        if (this.post.has_like) {
+          this.post.like_length += 1;
+        } else {
+          this.post.like_length -= 1;
+        }
+
+        this.$toast.success(res.data.message);
       });
     }
   }
