@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video class="video" :src="$axios.defaults.baseURL+post.content" controls="controls"></video>
+    <video v-if="post.content" class="video" :src="$axios.defaults.baseURL+post.content" controls="controls"></video>
     <div class="main">
       <div class="author">
         <div class="userinfo">
@@ -25,23 +25,12 @@
         </div>
       </div>
     </div>
-    <div class="footer">
-      <div class="comment-input">发布评论</div>
-      <div class="icons">
-        <span class="iconfont iconpinglun-"></span>
-        <i>{{post.comment_length>100?'99+':post.comment_length}}</i>
-      </div>
-      <div class="icons" @click="handerstar">
-        <span class="iconfont iconshoucang" :class="post.has_star ? 'active':''"></span>
-      </div>
-      <div class="icons">
-        <span class="iconfont iconfenxiang"></span>
-      </div>
-    </div>
+    <Postfooter :post="post"></Postfooter>
   </div>
 </template>
 
 <script>
+import Postfooter from "@/components/Postfooter";
 export default {
   data() {
     return {
@@ -50,6 +39,9 @@ export default {
         cover: [{}]
       }
     };
+  },
+   components: {
+    Postfooter
   },
   mounted() {
     // 解构本地的token
@@ -116,18 +108,7 @@ export default {
         this.$toast.success(res.data.message);
       });
     },
-    handerstar() {
-      this.$axios({
-        url: "/post_star/" + this.post.id,
-        headers: {
-          Authorization: this.token
-        }
-      }).then(res => {
-        // console.log(res);
-        this.post.has_star = !this.post.has_star;
-        this.$toast.success(this.post.has_star ? "收藏成功" : "取消收藏");
-      });
-    }
+  
   }
 };
 </script>
@@ -195,47 +176,5 @@ export default {
     }
   }
 }
-.footer {
-  padding: 10 / @px 20 / @px;
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  background: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  .comment-input {
-    flex: 1;
-    height: 30 / @px;
-    margin-right: 20 / @px;
-    padding: 0 20 / @px;
-    line-height: 30 / @px;
-    background: #eee;
-    border-radius: 50px;
-  }
-  .icons {
-    position: relative;
-    margin: 0 8 / @px;
-    .iconfont {
-      font-size: 24px;
-    }
-    i {
-      position: absolute;
-      top: -7px;
-      right: -14px;
-      display: block;
-      padding: 1px 2px;
-      background: red;
-      color: #fff;
-      line-height: 1;
-      border-radius: 50px;
-      font-size: 14px;
-    }
-    .active {
-      color: red;
-    }
-  }
-}
+
 </style>
