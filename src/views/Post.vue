@@ -34,7 +34,7 @@
         <span class="iconfont iconpinglun-"></span>
         <i>{{post.comment_length>100?'99+':post.comment_length}}</i>
       </div>
-      <div class="icons">
+      <div class="icons" @click="handerstar">
         <span class="iconfont iconshoucang" :class="post.has_star ? 'active':''"></span>
       </div>
       <div class="icons">
@@ -122,6 +122,19 @@ export default {
         }
 
         this.$toast.success(res.data.message);
+      });
+    },
+    // 收藏文章
+    handerstar() {
+      this.$axios({
+        url: "/post_star/" + this.post.id,
+        headers: {
+          Authorization: this.token
+        }
+      }).then(res => {
+        // console.log(res);
+        this.post.has_star =!this.post.has_star;
+        this.$toast.success( this.post.has_star?"收藏成功":"取消收藏")
       });
     }
   }
