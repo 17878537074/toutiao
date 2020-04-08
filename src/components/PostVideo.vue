@@ -1,5 +1,5 @@
 <template>
-     <router-link :to="`/post/${data.id}`"> 
+     <router-link :to="`/video/${data.id}`"> 
   <div>
     <div class="video">
       <h4>{{data.title}}</h4>
