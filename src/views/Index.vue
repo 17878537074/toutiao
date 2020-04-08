@@ -52,6 +52,7 @@ import PostItem from "@/components/PostItem";
 import PostImages from "@/components/PostImages";
 import PostVideo from "@/components/PostVideo";
 export default {
+  name:"index",
   data() {
     return {
       categories: [],
