@@ -4,7 +4,13 @@
       <span class="iconfont iconjiantou2" @click="$router.back()"></span>
       <div class="search-wraper">
         <span class="inconfont iconsearch"></span>
-        <input type="text" placeholder="请输入搜索关键字" autofocus v-model="value" @keyup.enter="handerSearch" />
+        <input
+          type="text"
+          placeholder="请输入搜索关键字"
+          autofocus
+          v-model="value"
+          @keyup.enter="handerSearch"
+        />
       </div>
       <span @click="handerSearch">搜索</span>
     </div>
@@ -31,9 +37,7 @@
         <PostImages v-if="item.type==1&&item.cover.length >= 3" :data="item"></PostImages>
         <PostVideo v-if="item.type==2" :data="item"></PostVideo>
       </div>
-      <div class="empty" v-if="list.length===0">
-        没有找到你想要的内容~
-      </div>
+      <div class="empty" v-if="list.length===0">没有找到你想要的内容~</div>
     </div>
   </div>
 </template>
@@ -44,6 +48,7 @@ import PostItem from "@/components/PostItem";
 import PostImages from "@/components/PostImages";
 import PostVideo from "@/components/PostVideo";
 export default {
+  name: "search",
   components: {
     PostItem,
     PostImages,
@@ -97,16 +102,27 @@ export default {
         // 把历史记录数据结构出来
         const { data } = res.data;
         this.list = data;
-        console.log(this.list);
+        // console.log(this.list);
       });
-    }
+    },
+   
   },
+   beforeRouteEnter(to, from, next) {
+      // console.log(from);
+     
+      next(vm=>{
+ if(from.path==="/"){
+           vm.showLayer=false;
+           vm.value=""
+      }
+      });
+    },
   watch: {
     //  监听输入框的输入，如果值为空，清空文章列表并且隐藏文章列表
     value() {
       if (this.value === "") {
         this.list = [];
-        this.showLayer = false;  
+        this.showLayer = false;
       }
     }
   }
@@ -196,7 +212,7 @@ export default {
     }
   }
 }
-.empty{
+.empty {
   text-align: center;
   color: #999;
   line-height: 50px;
