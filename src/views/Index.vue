@@ -15,7 +15,12 @@
     <!-- sticky：是否使用粘性定位布局 -->
     <!-- swipeable: 是否开启手势滑动切换 -->
     <van-tabs v-model="active" sticky swipeable @scroll="handelScroll">
-      <van-tab v-for="(item,index) in categories" v-if="item.is_top===1 || item.name==='V'" :key="index" :title="item.name">
+      <van-tab
+        v-for="(item,index) in categories"
+        v-if="item.is_top===1 || item.name==='V'"
+        :key="index"
+        :title="item.name"
+      >
         <!-- 下拉刷新 -->
 
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
@@ -52,7 +57,7 @@ import PostItem from "@/components/PostItem";
 import PostImages from "@/components/PostImages";
 import PostVideo from "@/components/PostVideo";
 export default {
-  name:"index",
+  name: "index",
   data() {
     return {
       categories: [],
@@ -71,8 +76,8 @@ export default {
     // 监听tab栏的切换
 
     active() {
-      const arr = this.categories.filter(v=>{
-            return v.is_top || v.name ==="V";
+      const arr = this.categories.filter(v => {
+        return v.is_top || v.name === "V";
       });
       //  console.log(this.active);
       // 判断如果点击的是最后一个图标，跳转到栏目管理页
@@ -90,7 +95,10 @@ export default {
       }, 200);
     }
   },
+  // activated生命周期函数，当组件每次被渲染的时候才会触发
+  // activated() {}
   mounted() {
+    // this.active = 0;
     // 请求前先判断本地是否有栏目的数据
     const categories = JSON.parse(localStorage.getItem("categories"));
     // 获取本地的token,如果没有值就等于一个空对象
@@ -267,6 +275,16 @@ export default {
       // 表示加载完毕
       this.refreshing = false;
       console.log("正在下拉刷新");
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    if (from.path === "/categroy") {
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        vm.active=0;
+      });
+    }else{
+      next();
     }
   }
 };

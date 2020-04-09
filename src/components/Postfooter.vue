@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="footer">
+      <router-link :to="`/postcomment/${post.id}`">
       <div class="comment-input">发布评论</div>
+      </router-link>
       <div class="icons">
         <span class="iconfont iconpinglun-"></span>
         <i>{{post.comment_length>100?'99+':post.comment_length}}</i>

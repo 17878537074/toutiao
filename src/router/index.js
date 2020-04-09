@@ -92,7 +92,13 @@ const routes = [
 		// 视频文章详情页
 		path:"/video/:id",
 		component:()=>import("@/views/Video"),
+	},
+	{
+		// 视频文章详情页
+		path:"/postcomment/:id",
+		component:()=>import("@/views/PostComment"),
 	}
+
 
 ]
 
