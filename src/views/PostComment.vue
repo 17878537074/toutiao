@@ -13,7 +13,7 @@
         <span class="reply">回复</span>
       </div>
       <!-- 回复组件 -->
-      <commentFloor></commentFloor>
+      <commentFloor v-if="item.parent" :data="item.parent"></commentFloor>
       <div class="content">{{item.content}}</div>
     </div>
   </div>
@@ -63,7 +63,7 @@ export default {
 @px: 360/100vw;
 .comment {
   padding: 15 / @px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
   .content {
     margin-top: 10 / @px;
   }
@@ -71,7 +71,7 @@ export default {
 .comment-top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10 / @px;
+  margin-bottom: 20 / @px;
   .user {
     display: flex;
     align-items: center;

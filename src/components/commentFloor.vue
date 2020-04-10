@@ -1,22 +1,31 @@
 <template>
   <div>
     <div class="comment-floor">
+      <commentFloor v-if="data.parent" :data="data.parent"></commentFloor>
       <div class="floor-top">
         <div class="user">
           <i>1.</i>
-          <em>火星网友</em>
-          <span>15分钟前</span>
+          <em>{{data.user.nickname}}</em>
+          <span>{{moment(data.create_date).fromNow()}}</span>
         </div>
         <span>回复</span>
       </div>
 
-      <div class="content">文章评论的回复</div>
+      <div class="content">{{data.content}}</div>
     </div>
   </div>
 </template>
 
 <script>
+import moment from "moment";
+moment.locale("zh-CN");
 export default {
+  data(){
+return {
+  moment,
+}
+  },
+  props: ['data'],
     // 声明当前的组件名，在当前的组件里name的值可以用于调用组件自己
     name:"commentFloor"
 };
