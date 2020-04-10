@@ -9,8 +9,8 @@ let app;
 // 绑定到原型
 Vue.prototype.$axios = axios;
 
-// axios.defaults.baseURL = "http://localhost:3000"
-axios.defaults.baseURL = "http://hmtoutiao-api.atlansic.com"
+axios.defaults.baseURL = "http://localhost:3000"
+// axios.defaults.baseURL = "http://hmtoutiao-api.atlansic.com"
 Vue.use(Vant);
 // 添加路由的守卫
 router.beforeEach((to, from, next) => {
