@@ -1,8 +1,14 @@
 <template>
-  <div>
+  <div class="container">
     <Navigatebar title="精彩跟帖" :showHome="true"></Navigatebar>
     <!-- v-model是否正在加载中 finished是否加载完毕 @load滚动到底部加载的事件-->
-    <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" :immediate-check="false">
+    <van-list
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoad"
+      :immediate-check="false"
+    >
       <div class="comment" v-for="(item,index) in list" :key="index">
         <div class="comment-top">
           <div class="user">
@@ -19,6 +25,21 @@
         <div class="content">{{item.content}}</div>
       </div>
     </van-list>
+    <div class="publish">
+      <!-- 输入框点击和不点击的效果不一样 -->
+      <van-field
+        v-model="message"
+        :rows="rows"
+        :autosize="!isFcous"
+        type="textarea"
+        placeholder="说点什么..."
+        class="textarea"
+        @focus="handerFocus"
+        @blur="handerBlur"
+        :class="isFcous?`active`:``"
+      />
+      <span class="submit" v-if="isFcous">发布</span>
+    </div>
   </div>
 </template>
 
@@ -27,7 +48,7 @@ import Navigatebar from "@/components/Navigatebar";
 import commentFloor from "@/components/commentFloor";
 // 日期转换的库
 import moment from "moment";
-import { log } from 'util';
+import { log } from "util";
 moment.locale("zh-CN");
 
 export default {
@@ -36,10 +57,13 @@ export default {
       pid: "",
       list: [],
       moment,
-      loading:false,
-      finished:false,
-      pageIndex:1,
-      pageSize:5
+      loading: false,
+      finished: false,
+      pageIndex: 1,
+      pageSize: 5,
+      message: "",
+      rows: 1,
+      isFcous: false
     };
   },
   components: {
@@ -56,24 +80,35 @@ export default {
     getist() {
       this.$axios({
         url: `/post_comment/${this.pid}`,
-        params:{
-          pageIndex:this.pageIndex,
-          pageSize:this.pageSize
+        params: {
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize
         }
       }).then(res => {
         console.log(res);
         const { data } = res.data;
-        this.list =[...this.list,...data];
-        this.pageIndex+=1;
-        this.loading=false;
-        if(data.length<this.pageSize){
-       this.finished=true;
+        this.list = [...this.list, ...data];
+        this.pageIndex += 1;
+        this.loading = false;
+        if (data.length < this.pageSize) {
+          this.finished = true;
         }
       });
     },
-    onLoad(){
+    onLoad() {
       // console.log(11);
       this.getist();
+    },
+    // 评论框获得焦点时触发的事件
+    handerFocus() {
+      // console.log(111);
+      this.rows = 3;
+      this.isFcous = true;
+    },
+    handerBlur() {
+      // console.log(11);
+      this.rows = 1;
+      this.isFcous = false;
     }
   }
 };
@@ -81,6 +116,9 @@ export default {
 
 <style lang="less" scoped>
 @px: 360/100vw;
+.container {
+  padding-bottom: 60 / @px;
+}
 .comment {
   padding: 20 / @px 15 / @px;
   border-bottom: 1px solid #eee;
@@ -92,7 +130,7 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20 / @px;
-  padding: 10/@px 5px;
+  padding: 10 / @px 5px;
   .user {
     display: flex;
     align-items: center;
@@ -110,6 +148,36 @@ export default {
   }
   .reply {
     font-size: 12px;
+  }
+}
+.publish {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 5px 15 / @px;
+  box-sizing: border-box;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  .textarea {
+    background: #eee;
+    border-radius: 50px;
+    padding: 5px 10 / @px;
+  }
+  .active {
+    height: 82 / @px!important;
+    border-radius: 4px;
+  }
+  .submit {
+    margin-left: 5px;
+    padding: 3px 10 / @px;
+    color: #fff;
+    background: red;
+    font-size: 12px;
+    border-radius: 50px;
+    flex-shrink: 0;
   }
 }
 </style>
