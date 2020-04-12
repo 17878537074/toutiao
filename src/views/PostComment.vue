@@ -36,9 +36,10 @@
         class="textarea"
         @focus="handerFocus"
         @blur="handerBlur"
+        @keyup.enter="handerSubmit"
         :class="isFcous?`active`:``"
       />
-      <span class="submit" v-if="isFcous">发布</span>
+      <span class="submit" v-if="isFcous" @click="handerSubmit">发布</span>
     </div>
   </div>
 </template>
@@ -85,7 +86,7 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         const { data } = res.data;
         this.list = [...this.list, ...data];
         this.pageIndex += 1;
@@ -108,7 +109,37 @@ export default {
     handerBlur() {
       // console.log(11);
       this.rows = 1;
-      this.isFcous = false;
+      setTimeout(() => {
+        this.isFcous = false;
+      }, 200);
+    },
+    // 发布评论
+    handerSubmit() {
+      if (this.message === "") {
+        this.$toast("评论不能为空！！！");
+        return;
+      }
+      const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
+      //  console.log(this.message);
+      this.$axios({
+        url: "/post_comment/" + this.pid,
+        method: "POST",
+        headers: {
+          Authorization: token
+        },
+        data: {
+          content: this.message
+        }
+      }).then(res => {
+        // console.log(res);
+        (this.message = "");
+        this.$toast.success("发布成功");
+        // this.pageIndex=1;
+        // this.getist();
+        this.list=[];//必须要清空，如果不清空会合并之前的评论
+        this.pageIndex=1;
+        this.getist()
+      });
     }
   }
 };
