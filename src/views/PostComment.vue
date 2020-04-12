@@ -18,10 +18,10 @@
               <span>{{moment(item.create_date).fromNow()}}</span>
             </div>
           </div>
-          <span class="reply">回复</span>
+          <span class="reply" @click="handerReply(item)">回复</span>
         </div>
         <!-- 回复组件 -->
-        <commentFloor v-if="item.parent" :data="item.parent"></commentFloor>
+        <commentFloor v-if="item.parent" :data="item.parent" @reply="handerReply"></commentFloor>
         <div class="content">{{item.content}}</div>
       </div>
     </van-list>
@@ -32,12 +32,13 @@
         :rows="rows"
         :autosize="!isFcous"
         type="textarea"
-        placeholder="说点什么..."
+        :placeholder="reply.user?`回复: @`+reply.user.nickname:`说点什么...`"
         class="textarea"
         @focus="handerFocus"
         @blur="handerBlur"
         @keyup.enter="handerSubmit"
         :class="isFcous?`active`:``"
+        ref="textarea"
       />
       <span class="submit" v-if="isFcous" @click="handerSubmit">发布</span>
     </div>
@@ -64,7 +65,9 @@ export default {
       pageSize: 5,
       message: "",
       rows: 1,
-      isFcous: false
+      isFcous: false,
+      // 回复评论的对象
+      reply: {}
     };
   },
   components: {
@@ -106,40 +109,66 @@ export default {
       this.rows = 3;
       this.isFcous = true;
     },
+    //失去焦点事件
     handerBlur() {
       // console.log(11);
       this.rows = 1;
       setTimeout(() => {
         this.isFcous = false;
+        if (this.message.trim() === "") {
+          this.reply = {};
+        }
       }, 200);
     },
     // 发布评论
     handerSubmit() {
-      if (this.message === "") {
+      if (this.message.trim() === "") {
         this.$toast("评论不能为空！！！");
         return;
       }
       const { token } = JSON.parse(localStorage.getItem("userInfo")) || {};
       //  console.log(this.message);
+      const data = {
+          content: this.message
+        }
+        // 如果reply有值，说明当前是一条有回复的评论
+        if(this.reply.id){
+          data.parent_id=this.reply.id;
+        }
       this.$axios({
         url: "/post_comment/" + this.pid,
         method: "POST",
         headers: {
           Authorization: token
         },
-        data: {
-          content: this.message
-        }
+       data
       }).then(res => {
         // console.log(res);
-        (this.message = "");
+        this.message = "";
         this.$toast.success("发布成功");
         // this.pageIndex=1;
         // this.getist();
-        this.list=[];//必须要清空，如果不清空会合并之前的评论
-        this.pageIndex=1;
-        this.getist()
+        this.list = []; //必须要清空，如果不清空会合并之前的评论
+        this.pageIndex = 1;
+        this.getist();
+        this.reply={}
       });
+    },
+    // 点击回复按钮触发的事件
+    handerReply(item) {
+      setTimeout(() => {
+        // console.log(item);
+        // 当前回复的信息记录到data
+        this.reply = item;
+        // console.log(this.reply);
+        
+        // 弹起输入框
+        this.isFcous = true;
+        // Vue中获取dom元素
+        // console.log(this.$refs.textarea);
+        // 输入框自动获取焦点
+        this.$refs.textarea.focus();
+      }, 200);
     }
   }
 };

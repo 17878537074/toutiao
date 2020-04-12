@@ -1,14 +1,15 @@
 <template>
   <div>
     <div class="comment-floor">
-      <commentFloor v-if="data.parent" :data="data.parent"></commentFloor>
+      <commentFloor v-if="data.parent" :data="data.parent" @reply="handerReply"></commentFloor>
       <div class="floor-top">
         <div class="user">
           <i>1.</i>
           <em>{{data.user.nickname}}</em>
           <span>{{moment(data.create_date).fromNow()}}</span>
         </div>
-        <span>回复</span>
+        <!-- 点击回复按钮时候触发父组件传递过来的回复函数 -->
+        <span @click="handerReply(data)">回复</span>
       </div>
 
       <div class="content">{{data.content}}</div>
@@ -27,7 +28,12 @@ return {
   },
   props: ['data'],
     // 声明当前的组件名，在当前的组件里name的值可以用于调用组件自己
-    name:"commentFloor"
+    name:"commentFloor",
+    methods: {
+     handerReply(data){
+       this.$emit("reply",data)
+     }
+    },
 };
 </script>
 
